@@ -65,7 +65,7 @@ runs:
     # Use the `get_workflow_runs` Python script to call GitHub API and output to runs.json
     - name: Get workflow runs
       run: |
-        python get_workflow_runs.py ${{ env.OWNER_NAME }} ${{ env.REPOSITORY }} ${{ env.START_DATE }} ${{ env.END_DATE }}
+        python get_workflow_runs.py ${{ env.OWNER_NAME }} ${{ env.REPO_NAME }} ${{ env.START_DATE }} ${{ env.END_DATE }}
         cat runs.json
       shell: bash
 
