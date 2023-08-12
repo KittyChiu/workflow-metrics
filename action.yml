@@ -13,47 +13,47 @@
 name: Workflow Metrics
 description: Generate metrics for historical workflow runs
 inputs:
-  repo-token:
+  GH_TOKEN:
     description: 'Repository token for API calls'
     required: true
-    default: ${{ github.token }}
-  repo-name:
+    default: ${{ github.events.inputs.GH_TOKEN }}
+  REPO_NAME:
     description: 'Repository name'
     required: true
-    default: ${{ github.repository }}
-  owner-name:
+    default: ${{ github.event.inputs.REPO_NAME }}
+  OWNER_NAME:
     description: 'Repository owner name'
     required: true
-    default: ${{ github.repository_owner }}
-  start-date:
+    default: ${{ github.event.inputs.OWNER_NAME }}
+  START_DATE:
     description: 'Start date of the period to evaluate'
     required: true
-    default: ${{ github.event.inputs.start-date }}
-  end-date:
+    default: ${{ github.event.inputs.START_DATE }}
+  END_DATE:
     description: 'End date of the period to evaluate'
     required: true
-    default: ${{ github.event.inputs.end-date }}
-  mermaid-template-path:
+    default: ${{ github.event.inputs.END_DATE }}
+  MERMAID_TEMPLATE_PATH:
     description: 'Mermaid markdown template'
     required: false
-    default: ${{ github.event.inputs.mermaid-template }}
-  table-template-path:
+    default: ${{ github.event.inputs.MERMAID_TEMPLATE_PATH }}
+  TABLE_TEMPLATE_PATH:
     description: 'Table markdown template'
     required: false
-    default: ${{ github.event.inputs.table-template }}
+    default: ${{ github.event.inputs.TABLE_TEMPLATE_PATH }}
 
 runs:
   using: composite
   steps:
     - name: Set environment variables
       run: |
-        echo "GH_TOKEN=${{ github.events.inputs.repo-token }}" >> "$GITHUB_ENV"
-        echo "REPO_NAME=${{ github.event.inputs.repo-name }}" >> "$GITHUB_ENV"
-        echo "OWNER_NAME=${{ github.event.inputs.owner-name }}" >> "$GITHUB_ENV"
-        echo "START_DATE=${{ github.event.inputs.start-date }}" >> "$GITHUB_ENV"
-        echo "END_DATE=${{ github.event.inputs.end-date }}" >> "$GITHUB_ENV"
-        echo "MERMAID_TEMPLATE_PATH=${{ github.event.inputs.mermaid-template-path }}" >> "$GITHUB_ENV"
-        echo "TABLE_TEMPLATE_PATH=${{ github.event.inputs.table-template-path }}" >> "$GITHUB_ENV"
+        echo "GH_TOKEN=${{ github.events.inputs.GH_TOKEN }}" >> "$GITHUB_ENV"
+        echo "REPO_NAME=${{ github.event.inputs.REPO_NAME }}" >> "$GITHUB_ENV"
+        echo "OWNER_NAME=${{ github.event.inputs.OWNER_NAME }}" >> "$GITHUB_ENV"
+        echo "START_DATE=${{ github.event.inputs.START_DATE }}" >> "$GITHUB_ENV"
+        echo "END_DATE=${{ github.event.inputs.END_DATE }}" >> "$GITHUB_ENV"
+        echo "MERMAID_TEMPLATE_PATH=${{ github.event.inputs.MERMAID_TEMPLATE_PATH }}" >> "$GITHUB_ENV"
+        echo "TABLE_TEMPLATE_PATH=${{ github.event.inputs.TABLE_TEMPLATE_PATH }}" >> "$GITHUB_ENV"
       shell: bash
 
     - name: Install dependencies
