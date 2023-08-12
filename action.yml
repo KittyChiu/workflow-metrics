@@ -1,0 +1,125 @@
+# This workflow evaluates actions execution time and outputs a job summary.
+# It uses the `get_workflow_runs` Python script to call the GitHub API and retrieve workflow runs, which are output to runs.json.
+# It then generates a list of workflow names from runs.json and outputs the results to workflow-names.txt.
+# Finally, it evaluates workflow runs statistics using the `evaluate_workflow_runs` Python script, and outputs the results to workflow-stats.csv.
+# The workflow also generates a Mermaid diagram and table in Markdown format for the report.
+# The workflow is triggered by a manual workflow_dispatch event.
+#
+# Variations:
+# - Workflow names can also be manually defined and ordered in the workflow-names.txt file.
+# - `START_DATE` and `END_DATE` in `step: Set dates` - They are set to one month apart. This can be modified to the desired duration.
+# - Templates in `step: Generate Mermaid diagram in markdown` and `step: Generate Mermaid diagram in markdown` can be customised with styling.
+#
+name: Workflow Metrics
+description: Generate metrics for historical workflow runs
+inputs:
+  repo-token:
+    description: 'The repository token'
+    required: true
+    default: ${{ github.token }}
+  repo-name:
+    description: 'The repository name'
+    required: true
+    default: ${{ github.repository }}
+  owner-name:
+    description: 'The owner name'
+    required: true
+    default: ${{ github.repository_owner }}
+  start-date:
+    description: 'The start date'
+    required: true
+    default: ${{ github.event.inputs.start-date }}
+  end-date:
+    description: 'The end date'
+    required: true
+    default: ${{ github.event.inputs.end-date }}
+  mermaid-template:
+    description: 'The Mermaid markdown template'
+    required: false
+    default: ${{ github.event.inputs.mermaid-template }}
+  table-template:
+    description: 'The table markdown template'
+    required: false
+    default: ${{ github.event.inputs.table-template }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set environment variables
+      run: |
+        echo "GH_TOKEN=${{ github.events.inputs.repo-token }}" >> "$GITHUB_ENV"
+        echo "REPO_NAME=${{ github.event.inputs.repo-name }}" >> "$GITHUB_ENV"
+        echo "OWNER_NAME=${{ github.event.inputs.owner-name }}" >> "$GITHUB_ENV"
+        echo "START_DATE=${{ github.event.inputs.start-date }}" >> "$GITHUB_ENV"
+        echo "END_DATE=${{ github.event.inputs.end-date }}" >> "$GITHUB_ENV"
+        echo "MERMAID_TEMPLATE=${{ github.event.inputs.mermaid-template }}" >> "$GITHUB_ENV"
+        echo "TABLE_TEMPLATE=${{ github.event.inputs.table-template }}" >> "$GITHUB_ENV"
+      shell: bash
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+      shell: bash
+
+    # Use the `get_workflow_runs` Python script to call GitHub API and output to runs.json
+    - name: Get workflow runs
+      run: |
+        python ./.github/scripts/get_workflow_runs.py ${{ github.repository_owner }} $(echo "${{ github.repository }}" | cut -d'/' -f2) ${{ env.START_DATE }} ${{ env.END_DATE }}
+        cat runs.json
+      shell: bash
+
+    # Generate list of workflow names from runs.json, OR define the Value Stream actions in workflow-names.txt and comment this step
+    - name: Get list of workflow names from runs.json
+      run: |
+        jq '[.[] | .name ] | unique' runs.json | jq -r '.[]' > workflow-names.txt
+        cat workflow-names.txt 
+      shell: bash
+
+    # Evaluate workflow runs statistics using `evaluate_workflow_runs` Python script, and output to workflow-stats.csv
+    - name: Evaluate actions consumption
+      run: |
+        echo "Evaluating workflow runs statistics"
+        python ./.github/scripts/evaluate_workflow_runs.py 
+        cat workflow-stats.csv
+      shell: bash
+
+    # Generate Mermaid diagram in Markdown format 
+    - name: Generate Mermaid diagram in markdown
+      run: |
+        echo "## Value stream view" >> mermaid.md
+        echo -e '```mermaid\n' >> mermaid.md
+        echo "timeline" >> mermaid.md
+        echo "    Stage: Average run duration : Success rate : Frequency" >> mermaid.md
+
+        tail -n +2 workflow-stats.csv | while IFS=, read -r workflow_name average_duration percentage_success total_runs;
+        do
+          echo "Parse Mermaid diagram: Calculated event column"
+          echo "    $workflow_name: $average_duration : $percentage_success : $total_runs" >> mermaid.md
+        done
+        echo -e '```\n' >> mermaid.md
+      shell: bash
+
+    # Generate table in Markdown format 
+    - name: Generate Table in markdown
+      run: |
+        echo "## Consumption table view" >> table.md
+        echo "| Workflow | Average duration | Success rate | Total runs |" >> table.md
+        echo "| -------- | ---------------- | ------------ | ---------- |" >> table.md
+
+        tail -n +2 workflow-stats.csv | while IFS=, read -r workflow_name average_duration percentage_success total_runs;
+        do
+          echo "Parse Table: Calculated row"
+          echo "| $workflow_name \
+          | $average_duration \
+          | $percentage_success \
+          | $total_runs \
+          |" >> table.md
+        done
+      shell: bash
+
+    - name: Format calculated result with templates
+      run: |
+        echo "Combine output files"
+        cat mermaid.md table.md > output.md
+      shell: bash

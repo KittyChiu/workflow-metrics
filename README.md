@@ -1,1 +1,1 @@
-# workflow-metrics
+# Workflow Metrics Action
