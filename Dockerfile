@@ -16,5 +16,4 @@ RUN apt-get update && \
   apt-get update && \
   apt-get install -y gh
 
-CMD ["/action/workspace/workflow_metrics.py"]
-ENTRYPOINT ["/bin/bash", "-c"]
+CMD ["python", "/action/workspace/workflow_metrics.py"]
