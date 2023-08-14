@@ -47,6 +47,9 @@ end_date = os.getenv("END_DATE")
 if not end_date:
     raise ValueError("END_DATE environment variable not set")
 
+# Authenticate with GitHub CLI
+subprocess.run(['gh', 'auth', 'login', '--with-token', gh_token])
+
 # Get workflow runs
 subprocess.run(['python', 'get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
 with open('runs.json', 'r') as f:
