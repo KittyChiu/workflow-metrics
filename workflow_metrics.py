@@ -51,7 +51,7 @@ if not end_date:
 subprocess.run(['gh', 'auth', 'login', '--with-token', gh_token])
 
 # Get workflow runs
-subprocess.run(['python', '/action/workspace/get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
+subprocess.run(['python', '/get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
 with open('runs.json', 'r') as f:
     print(f.read())
 
@@ -68,6 +68,6 @@ with open('workflow-names.txt', 'r') as f:
 
 # Evaluate workflow runs statistics
 print("Evaluating workflow runs statistics")
-subprocess.run(['python', '/action/workspace/evaluate_workflow_runs.py'])
+subprocess.run(['python', '/evaluate_workflow_runs.py'])
 with open('workflow-stats.csv', 'r') as f:
     print(f.read())
