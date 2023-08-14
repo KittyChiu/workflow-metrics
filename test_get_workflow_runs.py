@@ -14,7 +14,7 @@ Output:
     - Test results for the `get_workflow_runs.py` script
 
 Example:
-    python -m unittest test_get_workflow_runs.TestGetWorkflowRuns.test_get_workflow_runs
+    python -m unittest test_get_workflow_runs.TestGetWorkflowRuns.test_get_workflow_runs_with_valid_dates
 """
 
 import unittest
