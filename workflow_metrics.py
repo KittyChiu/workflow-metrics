@@ -47,12 +47,6 @@ end_date = os.getenv("END_DATE")
 if not end_date:
     raise ValueError("END_DATE environment variable not set")
 
-# Print variables
-print("owner_name: " + owner_name)
-print("repo_name: " + repo_name)
-print("start_date: " + start_date)
-print("end_date: " + end_date)
-
 # Get workflow runs
 subprocess.run(['python', 'get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
 with open('runs.json', 'r') as f:
