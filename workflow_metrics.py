@@ -27,9 +27,9 @@ import os
 import subprocess
 
 # Get environment variables
-# gh_token = os.getenv("GH_TOKEN")
-# if not gh_token:
-#     raise ValueError("GITHUB_TOKEN environment variable not set")
+gh_token = os.getenv("GH_TOKEN")
+if not gh_token:
+    raise ValueError("GITHUB_TOKEN environment variable not set")
 
 owner_name = os.getenv("OWNER_NAME")
 if not owner_name:

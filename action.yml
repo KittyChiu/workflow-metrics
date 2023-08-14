@@ -1,37 +1,6 @@
 name: Workflow Metrics
 author: kittychiu
 description: Generate metrics for historical workflow runs
-inputs:
-  GH_TOKEN:
-    description: 'Repository token for API calls'
-    required: true
-    default: ${{ github.events.inputs.GH_TOKEN }}
-  OWNER_NAME:
-    description: 'Repository owner name'
-    required: true
-    default: ${{ github.event.inputs.OWNER_NAME }}
-  REPO_NAME:
-    description: 'Repository name'
-    required: true
-    default: ${{ github.event.inputs.REPO_NAME }}
-  START_DATE:
-    description: 'Start date of the period to evaluate (YYYY-MM-DD)'
-    required: true
-    default: ${{ github.event.inputs.START_DATE }}
-  END_DATE:
-    description: 'End date of the period to evaluate (YYYY-MM-DD)'
-    required: true
-    default: ${{ github.event.inputs.END_DATE }}
-outputs:
-  workflow-stats:
-    description: 'CSV file containing workflow run statistics'
-  workflow-names:
-    description: 'Text file containing unique workflow names'
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.OWNER_NAME }}
-    - ${{ inputs.REPO_NAME }}
-    - ${{ inputs.START_DATE }}
-    - ${{ inputs.END_DATE }}
