@@ -51,8 +51,8 @@ if not end_date:
 subprocess.run(['gh', 'auth', 'login', '--with-token', gh_token])
 
 # Get workflow runs
-subprocess.run(['python', 'get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
-with open('runs.json', 'r') as f:
+subprocess.run(['python', '/action/workspace/get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
+with open('/action/workspace/runs.json', 'r') as f:
     print(f.read())
 
 # Get list of workflow names from runs.json
@@ -60,14 +60,14 @@ result1 = subprocess.run(['jq', '[.[] | .name ] | unique', 'runs.json'], stdout=
 result2 = subprocess.run(['jq', '-r', '.[]'], input=result1.stdout, stdout=subprocess.PIPE)
 
 # Write workflow names to workflow-names.txt
-with open('workflow-names.txt', 'w') as f:
+with open('/action/workspace/workflow-names.txt', 'w') as f:
     f.write(result2.stdout.decode())
 
-with open('workflow-names.txt', 'r') as f:
+with open('/action/workspace/workflow-names.txt', 'r') as f:
     print(f.read())
 
 # Evaluate workflow runs statistics
 print("Evaluating workflow runs statistics")
-subprocess.run(['python', 'evaluate_workflow_runs.py'])
-with open('workflow-stats.csv', 'r') as f:
+subprocess.run(['python', '/action/workspace/evaluate_workflow_runs.py'])
+with open('/action/workspace/workflow-stats.csv', 'r') as f:
     print(f.read())

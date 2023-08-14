@@ -1,8 +1,8 @@
 FROM python:3.9-slim-buster
 LABEL org.opencontainers.image.source https://github.com/kittychiu/workflow-metrics
 
-WORKDIR /
-COPY *.py /
+WORKDIR /action/workspace
+COPY *.py /action/workspace/
 
 # Update pip
 RUN python -m pip install --upgrade pip
@@ -16,4 +16,4 @@ RUN apt-get update && \
   apt-get update && \
   apt-get install -y gh
 
-CMD ["python", "/workflow_metrics.py"]
+CMD ["python", "/action/workspace/workflow_metrics.py"]
