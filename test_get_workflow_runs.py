@@ -77,7 +77,6 @@ class TestGetWorkflowRuns(unittest.TestCase):
         # Print the workflow runs
         with open("runs.json", "r") as f:
             raw_json = f.read()
-            #print(raw_json)
             print("Number of characters in runs.json:", len(raw_json))
 
         # Clean up the temporary file
