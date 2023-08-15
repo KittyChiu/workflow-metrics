@@ -17,19 +17,27 @@ Description:
     The script outputs the results to a CSV file named `workflow-stats.csv`, which contains the stats for each
     workflow. The CSV file has the following columns:
 
-        - Workflow name
-        - Average duration of successful runs (in seconds)
-        - Total number of runs
-        - Success rate (in percentage)
+        - Workflow name: The name of the workflow.
+        - Average duration of successful runs (in seconds): The average of the successful runs for the workflow.
+        - Median duration of successful runs (in seconds): The median of the successful runs for the workflow.
+        - Total number of runs: The total number of runs for the workflow.
+        - Success rate (in percentage): The percentage of successful runs for the workflow.
 
     To run the script, you need to have Python 3.x installed on your system. You also need to have the `runs.json`
     file and the `workflow-names.txt` file in the same directory as the script.
 
 Output:
-    - `workflow-stats.csv` file containing the stats for each workflow
+    The script outputs the results to a CSV file named `workflow-stats.csv` in the same directory as the script.
 
 Example:
     python evaluate_workflow_runs.py
+
+Note:
+    - The script assumes that the `runs.json` file and the `workflow-names.txt` file are in the same directory as the script.
+    - The script assumes that the `runs.json` file contains a list of workflow runs in JSON format.
+    - The script assumes that the `workflow-names.txt` file contains a list of unique workflow names to evaluate, with one name per line.
+    - The script calculates the success rate as the percentage of successful or skipped runs out of the total number of runs.
+    - The script ignores failed runs when calculating the average duration of successful runs.
 """
 
 import json
@@ -44,9 +52,13 @@ for workflow_name in workflow_names:
     print(f'Evaluating: {workflow_name}')
 
     # Filter the runs by workflow name
-    with open('runs.json', 'r') as f:
-        runs = json.load(f)
-    runs_filtered = [run for run in runs if run['name'] == workflow_name]
+    try:
+        with open('runs.json', 'r') as f:
+            runs = json.load(f)
+        runs_filtered = [run for run in runs if run['name'] == workflow_name]
+    except FileNotFoundError:
+        print(f'Error: runs.json file not found')
+        continue
 
     # Evaluate the total number of runs
     total_runs = len(runs_filtered)
