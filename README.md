@@ -67,6 +67,15 @@ jobs:
           START_DATE: "2023-07-01"
           END_DATE: "2023-08-01"
 
+      - name: Upload all .txt .csv .md files to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: workflow-stats
+          path: |
+            workflow-stats.md
+            workflow-stats.csv
+            workflow-names.txt
+            runs.json
 ```
 
 </details>
