@@ -47,8 +47,9 @@ class TestEvaluateWorkflowRuns(unittest.TestCase):
         # Check the contents of the workflow-stats.csv file
         with open('workflow-stats.csv', 'r') as f:
             csv_contents = f.read()
+        print(csv_contents)
 
-        expected_csv_contents = 'workflow_1,12.33s,100.0%,3\nworkflow_2,15.50s,50.0%,2\nworkflow_3,25.12s,20.9%,43\n'
+        expected_csv_contents = 'workflow_name,average_duration,median_duration,success_rate,total_runs\nworkflow_1,12.33,12.00,100.00,3\nworkflow_2,15.50,15.50,50.00,2\nworkflow_3,25.12,22.00,20.93,43\n'
         self.assertEqual(csv_contents, expected_csv_contents)
 
     def tearDown(self):

@@ -33,6 +33,7 @@ Example:
 """
 
 import json
+import statistics
 
 # Load the workflow names from the workflow-names.txt file
 with open('workflow-names.txt', 'r') as f:
@@ -49,27 +50,23 @@ for workflow_name in workflow_names:
 
     # Evaluate the total number of runs
     total_runs = len(runs_filtered)
-    # print(f'...Total runs: {total_runs}')
+    duration_data = [run['duration'] for run in runs_filtered]
 
-    # Evaluate the average duration
     if total_runs > 0:
-        raw_average_duration = sum(run['duration'] for run in runs_filtered) / total_runs
-        average_duration = f'{raw_average_duration:.2f}s'
+        # Evaluate the average duration
+        average_duration = f'{statistics.mean(duration_data):.2f}'
+        # Evaluate the median duration
+        median_duration = f'{statistics.median(duration_data):.2f}'
+        # Evaluate the percentage of successful or skipped runs
+        success_rate = f'{statistics.mean([1 if run["conclusion"] in ["success", "skipped"] else 0 for run in runs_filtered]) * 100:.2f}'
     else:
-        average_duration = '0.00s'
-    # print(f'...Average duration: {average_duration}')
-
-    # Evaluate the number of successful or skipped runs
-    total_success = len([run for run in runs_filtered if run['conclusion'] in ['success', 'skipped']])
-    # print(f'...Total success or skipped runs: {total_success}')
-
-    # Evaluate the percentage of successful or skipped runs
-    if total_runs > 0:
-        percentage_success = f'{total_success / total_runs * 100:.1f}%'
-    else:
-        percentage_success = '0.0%'
-    # print(f'...Percentage success or skipped runs: {percentage_success}')
+        average_duration = '0.00'
+        median_duration = '0.00'
+        success_rate = '0.0'
 
     # Output the results to a CSV file
     with open('workflow-stats.csv', 'a') as f:
-        f.write(f'{workflow_name},{average_duration},{percentage_success},{total_runs}\n')
+        # Add header row if file is empty
+        if f.tell() == 0:
+            f.write('workflow_name,average_duration,median_duration,success_rate,total_runs\n')
+        f.write(f'{workflow_name},{average_duration},{median_duration},{success_rate},{total_runs}\n')
