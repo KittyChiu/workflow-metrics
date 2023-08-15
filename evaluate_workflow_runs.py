@@ -48,7 +48,9 @@ import json
 import statistics
 
 # Check if the workflow-names.txt file exists
-if not os.path.isfile('workflow-names.txt'):
+if os.path.isfile('workflow-names.txt'):
+    print(f'workflow-names.txt file is found')
+else:
     print(f'Warning: workflow-names.txt file not found')
     # Load the workflow names from the runs.json file
     with open('runs.json', 'r') as f:
