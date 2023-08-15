@@ -20,16 +20,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: version
-      id: version
-      run: |
-        tag=${GITHUB_REF/refs\/tags\//}
-        version=${tag#v}
-        major=${version%%.*}
-        echo "tag=${tag}" >> "$GITHUB_OUTPUT"
-        echo "version=${version}" >> "$GITHUB_OUTPUT"
-        echo "major=${major}" >> "$GITHUB_OUTPUT"
-
     - name: Log in to the Container registry
       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
       with:
@@ -39,6 +29,5 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v${{ steps.version.outputs.major }}
-        docker push ghcr.io/kittychiu/workflow-metrics:v${{ steps.version.outputs.major }}
-      # docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v1.0.0
+        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v1
+        docker push ghcr.io/kittychiu/workflow-metrics:v1

@@ -3,4 +3,4 @@ author: kittychiu
 description: Generate metrics for historical workflow runs
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/kittychiu/workflow-metrics:v1.0.0'
+  image: 'docker://ghcr.io/kittychiu/workflow-metrics:v1'
