@@ -28,7 +28,35 @@ Returns:
 Requirements:
     - Python 3.x
     - `jq` command-line tool
-    - GitHub API token with `repo` scope
+
+Description:
+    This script retrieves all workflow runs for a repository within the specified date range. The script takes four
+    command-line arguments: the owner of the repository, the name of the repository, the start date of the date range,
+    and the end date of the date range. The start and end dates should be in ISO 8601 format.
+
+    The script uses the GitHub API to retrieve the workflow runs for the specified repository and date range. The
+    script requires authentication with `repo` scope with the API.
+
+    The script outputs a list of workflow runs in JSON format, with the following fields for each run:
+
+        - conclusion
+        - created_at
+        - display_title
+        - event
+        - head_branch
+        - name
+        - run_number
+        - run_started_at
+        - status
+        - updated_at
+        - url
+        - duration
+
+    To run the script, you need to have Python 3.x and the `jq` command-line tool installed on your system. You also
+    need to have a GitHub API token with the `repo` scope.
+
+Output:
+    - A list of workflow runs in JSON format
 
 Example:
     python get_workflow_runs.py octocat hello-world 2022-01-01T00:00:00Z 2022-01-31T23:59:59Z
@@ -97,5 +125,3 @@ with open("runs.json", "w") as f:
 
 # Print the number of workflow runs 
 print(f"Number of workflow runs: {len(workflow_runs)}")
-# with open("runs.json", "r") as f:
-#     print(f.read())

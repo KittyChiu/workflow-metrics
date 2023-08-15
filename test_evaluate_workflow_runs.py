@@ -9,6 +9,24 @@ Requirements:
     - `jq` command-line tool
     - `evaluate_workflow_runs.py` script to test
 
+Description:
+    This script contains unit tests for the `evaluate_workflow_runs.py` script. The tests verify that the script
+    correctly calculates the average duration of the successful runs.
+
+    To run the tests, you need to have Python 3.x and the `jq` command-line tool installed on your system. You also
+    need to be authenticated with the GitHub API with `repo` scope.
+
+    The tests use the `unittest` module in Python to define test cases and assertions. Each test case corresponds to
+    a specific function in the `evaluate_workflow_runs.py` script, and tests the function's behavior under different
+    conditions.
+
+    To run the tests, you can use the following command:
+
+        python -m unittest test_evaluate_workflow_runs.TestEvaluateWorkflowRuns.test_evaluate_workflow_runs
+
+    This command runs the `test_evaluate_workflow_runs()` function in the `TestEvaluateWorkflowRuns` class, which
+    executes all the test cases defined in the class.
+
 Output:
     - Test results for the `evaluate_workflow_runs.py` script
 
@@ -23,16 +41,6 @@ import os
 
 class TestEvaluateWorkflowRuns(unittest.TestCase):
     def test_evaluate_workflow_runs(self):
-        # For debug: Print the contents of the runs.json file
-        # with open('runs.json', 'r') as f:
-        #     runs_contents = f.read()
-        # print(runs_contents)
-
-        # For debug: Print the contents of the workflow-names.txt file
-        # with open('workflow-names.txt', 'r') as f:
-        #     names_contents = f.read()
-        # print(names_contents)
-
         # Run the evaluate-workflow-runs.py script
         subprocess.run(['python', 'evaluate_workflow_runs.py'])
 
@@ -42,7 +50,6 @@ class TestEvaluateWorkflowRuns(unittest.TestCase):
 
         expected_csv_contents = 'workflow_1,12.33s,100.0%,3\nworkflow_2,15.50s,50.0%,2\nworkflow_3,25.12s,20.9%,43\n'
         self.assertEqual(csv_contents, expected_csv_contents)
-        #print(csv_contents)
 
     def tearDown(self):
         # Remove the test files

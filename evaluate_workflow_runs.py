@@ -9,6 +9,22 @@ Requirements:
     - `runs.json` file containing the workflow runs to evaluate
     - `workflow-names.txt` file containing the unique workflow names to evaluate
 
+Description:
+    This script reads the `runs.json` file and extracts the workflow runs for each workflow specified in the
+    `workflow-names.txt` file. For each workflow, the script calculates the average duration of the successful runs,
+    the total number of runs, and the success rate (i.e. the percentage of successful runs).
+
+    The script outputs the results to a CSV file named `workflow-stats.csv`, which contains the stats for each
+    workflow. The CSV file has the following columns:
+
+        - Workflow name
+        - Average duration of successful runs (in seconds)
+        - Total number of runs
+        - Success rate (in percentage)
+
+    To run the script, you need to have Python 3.x installed on your system. You also need to have the `runs.json`
+    file and the `workflow-names.txt` file in the same directory as the script.
+
 Output:
     - `workflow-stats.csv` file containing the stats for each workflow
 

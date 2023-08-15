@@ -15,6 +15,7 @@ import unittest
 class TestWorkflowMetrics(unittest.TestCase):
 
     def test_workflow_metrics(self):
+        os.environ['GH_TOKEN'] = 'myPAT'
         os.environ['OWNER_NAME'] = 'myorg'
         os.environ['REPO_NAME'] = 'myrepo'
         os.environ['START_DATE'] = '2023-07-01'
