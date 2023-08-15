@@ -27,8 +27,18 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: version
+      id: version
+      run: |
+        tag=${GITHUB_REF/refs\/tags\//}
+        version=${tag#v}
+        major=${version%%.*}
+        echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+        echo "version=${version}" >> "$GITHUB_OUTPUT"
+        echo "major=${major}" >> "$GITHUB_OUTPUT"
+
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v1.0.0
-        docker push ghcr.io/kittychiu/workflow-metrics:v1.0.0 
-      # run: docker build . --file Dockerfile --platform linux/amd64 --tag workflow-metrics:"$(date +%s)"
+        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v${{ steps.version.outputs.major }}
+        docker push ghcr.io/kittychiu/workflow-metrics:v${{ steps.version.outputs.major }}
+      # docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v1.0.0
