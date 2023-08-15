@@ -40,12 +40,29 @@ Note:
     - The script ignores failed runs when calculating the average duration of successful runs.
 """
 
+import os
 import json
 import statistics
+
+# Check if the workflow-names.txt file exists
+if not os.path.isfile('workflow-names.txt'):
+    # Load the workflow names from the runs.json file
+    with open('runs.json', 'r') as f:
+        runs = json.load(f)
+    workflow_names = list(set(run['name'] for run in runs))
+
+    # Write the workflow names to the workflow-names.txt file
+    with open('workflow-names.txt', 'w') as f:
+        f.write('\n'.join(workflow_names))
 
 # Load the workflow names from the workflow-names.txt file
 with open('workflow-names.txt', 'r') as f:
     workflow_names = f.read().splitlines()
+
+# Output the results to a CSV file
+with open('workflow-stats.csv', 'w') as f:
+    f.write('workflow_name,average_duration,median_duration,success_rate,total_runs\n')
+
 
 # Evaluate the stats for each workflow
 for workflow_name in workflow_names:
@@ -78,7 +95,4 @@ for workflow_name in workflow_names:
 
     # Output the results to a CSV file
     with open('workflow-stats.csv', 'a') as f:
-        # Add header row if file is empty
-        if f.tell() == 0:
-            f.write('workflow_name,average_duration,median_duration,success_rate,total_runs\n')
         f.write(f'{workflow_name},{average_duration},{median_duration},{success_rate},{total_runs}\n')

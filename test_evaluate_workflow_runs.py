@@ -41,16 +41,34 @@ import os
 
 class TestEvaluateWorkflowRuns(unittest.TestCase):
     def test_evaluate_workflow_runs(self):
+        # Create a test workflow-names.txt file
+        with open('workflow-names.txt', 'w') as f:
+            f.write('workflow_1\nworkflow_2\nworkflow_3\n')
+
         # Run the evaluate-workflow-runs.py script
         subprocess.run(['python', 'evaluate_workflow_runs.py'])
 
         # Check the contents of the workflow-stats.csv file
         with open('workflow-stats.csv', 'r') as f:
-            csv_contents = f.read()
-        print(csv_contents)
+            actual_csv_contents = f.read()
+        print(actual_csv_contents)
 
         expected_csv_contents = 'workflow_name,average_duration,median_duration,success_rate,total_runs\nworkflow_1,12.33,12.00,100.00,3\nworkflow_2,15.50,15.50,50.00,2\nworkflow_3,25.12,22.00,20.93,43\n'
-        self.assertEqual(csv_contents, expected_csv_contents)
+        self.assertEqual(actual_csv_contents, expected_csv_contents)
+
+    def test_evaluate_workflow_runs_no_workflow_names_file(self):
+        # Run the evaluate-workflow-runs.py script
+        subprocess.run(['python', 'evaluate_workflow_runs.py'])
+
+        # Check the contents of the workflow-stats.csv file
+        with open('workflow-stats.csv', 'r') as f:
+            actual_csv_contents = f.read()
+        print(actual_csv_contents)
+
+        self.assertIn('workflow_1,12.33,12.00,100.00,3\n', actual_csv_contents)
+        self.assertIn('workflow_2,15.50,15.50,50.00,2\n', actual_csv_contents)
+        self.assertIn('workflow_3,25.12,22.00,20.93,43\n', actual_csv_contents)
+
 
     def tearDown(self):
         # Remove the test files
@@ -58,11 +76,8 @@ class TestEvaluateWorkflowRuns(unittest.TestCase):
         os.remove('runs.json')
         os.remove('workflow-stats.csv')
 
-    def setUp(self):
-        # Create a test workflow-names.txt file
-        with open('workflow-names.txt', 'w') as f:
-            f.write('workflow_1\nworkflow_2\nworkflow_3\n')
 
+    def setUp(self):
         # Create a test runs.json file
         runs = [
           {
