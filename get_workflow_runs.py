@@ -124,4 +124,4 @@ with open("runs.json", "w") as f:
     json.dump(workflow_runs, f)
 
 # Print the number of workflow runs 
-print(f"Number of workflow runs: {len(workflow_runs)}")
+print(f"[{repo_owner}/{repo_name}]: No. of workflow runs: {len(workflow_runs)}")
