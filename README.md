@@ -1,5 +1,7 @@
 # Workflow Metrics Action
 
+[![CodeQL](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql) [![Docker Image CI](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml)
+
 This GitHub Action provides a way to evaluate statistics for your GitHub Actions workflows. With this action, you can easily monitor the performance of your workflows and identify areas for improvement.
 
 Metrics that are evaluated are:
@@ -196,7 +198,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      OWNER_NAME: ${{ github.repository_owner }}
 
     steps:
       - name: Checkout code
@@ -210,10 +211,12 @@ jobs:
       - name: Test docker action
         uses: kittychiu/workflow-metrics@v0.4.7
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ env.GH_TOKEN }}
+          OWNER_NAME: ${{ github.repository_owner }}
           START_DATE: ${{ env.START_DATE }}
           END_DATE: ${{ env.END_DATE }}
-
+          DELAY_BETWEEN_QUERY: 5
+    
       - name: Convert org-workflow-stats.csv to stats-table.md markdown table
         run: |
           echo -e "## Table View\n" > stats-table.md

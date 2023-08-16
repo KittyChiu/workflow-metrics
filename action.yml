@@ -6,4 +6,4 @@ runs:
   image: 'docker://ghcr.io/kittychiu/workflow-metrics:v1'
 branding:
   icon: 'rss'
-  color: 'blue'
+  color: 'orange'
