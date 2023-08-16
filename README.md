@@ -25,7 +25,7 @@ The following options are available for configuring the action:
 | --- | --- | --- | --- |
 | `GH_TOKEN` | Yes | N/A | A GitHub token with access to the repository. Minimal scope is `repo` |
 | `OWNER_NAME` | Yes | N/A | Name of the repository owner. |
-| `REPO_NAME` | No | N/A | Name of the repository. If `REPO_NAME` is not provide, the action will analyse all the workflow runs in the organisation. |
+| `REPO_NAME` | No | N/A | Name of the repository. If `REPO_NAME` is not provided, the action will analyse all the workflow runs in the organisation. |
 | `START_DATE` | Yes | N/A | Start date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `END_DATE` | Yes | N/A | End date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting when analysing the whole org. |
