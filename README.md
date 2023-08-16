@@ -25,10 +25,10 @@ The following options are available for configuring the action:
 | --- | --- | --- | --- |
 | `GH_TOKEN` | Yes | N/A | A GitHub token with access to the repository. Minimal scope is `repo` |
 | `OWNER_NAME` | Yes | N/A | Name of the repository owner. |
-| `REPO_NAME` | No | N/A | Name of the repository. |
+| `REPO_NAME` | No | N/A | Name of the repository. If `REPO_NAME` is not provide, the action will analyse all the workflow runs in the organisation. |
 | `START_DATE` | Yes | N/A | Start date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `END_DATE` | Yes | N/A | End date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
-| `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting. |
+| `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting when analysing the whole org. |
 
 ## Outputs
 
@@ -56,7 +56,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.1
+        uses: KittyChiu/workflow-metrics@v0.4.5
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER_NAME: "myOrg"
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      REPO_OWNER: ${{ github.repository_owner }}
+      OWNER_NAME: ${{ github.repository_owner }}
 
     steps:
       - name: Checkout code
@@ -117,10 +117,9 @@ jobs:
           echo "REPO_NAME=${repo}" >> $GITHUB_ENV
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.1
+        uses: KittyChiu/workflow-metrics@v0.4.5
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OWNER_NAME: ${{ env.REPO_OWNER }}
           REPO_NAME: ${{ env.REPO_NAME }}
           START_DATE: ${{ env.START_DATE }}
           END_DATE: ${{ env.END_DATE }}
@@ -151,7 +150,7 @@ jobs:
       - name: Publish content to a new GitHub Issue
         uses: peter-evans/create-issue-from-file@v4
         with:
-          title: Workflow runs consumption summary (${{ env.START_DATE }} - ${{ env.END_DATE }})
+          title: Workflow runs summary `${{ env.REPO_NAME }}` repo (${{ env.START_DATE }} - ${{ env.END_DATE }})
           content-filepath: issue_view.md
 
       - name: Upload all .txt .csv .md files to artifact
@@ -165,9 +164,103 @@ jobs:
             runs.json
 ```
 
+Below is an example of the `stats-table.md` file:
+
+```md
+|workflow name|average duration|median duration|success rate|total runs|
+|-------------|----------------|---------------|------------|----------|
+|workflow_1|17.00|17.00|100.00|1|
+|workflow_2|36.17|36.50|53.70|54|
+|workflow_3|3.00|2.00|100.00|3|
+```
+
 </details>
 
 This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue.
+
+### 2. Generate a monthly report for the whole org, and post on an Issue
+
+<details>
+
+```yml
+name: Monthly SLOs Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 1 * *'
+
+jobs:
+  evaluate-actions-consumption:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      OWNER_NAME: ${{ github.repository_owner }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set dates
+        run: |
+          echo "START_DATE=$(date -d '-14 days' +%Y-%m-%d)" >> "$GITHUB_ENV"
+          echo "END_DATE=$(date +%Y-%m-%d)" >> "$GITHUB_ENV"
+          
+      - name: Test docker action
+        uses: KittyChiu/workflow-metrics@v0.4.5
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          START_DATE: ${{ env.START_DATE }}
+          END_DATE: ${{ env.END_DATE }}
+
+      - name: Convert org-workflow-stats.csv to stats-table.md markdown table
+        run: |
+          echo -e "## Table View\n" > stats-table.md
+          header=$(head -n 1 org-workflow-stats.csv | sed 's/,/|/g' | sed 's/_/ /g')
+          echo -e "|${header}|" >> stats-table.md
+          metadata=$(head -n 1 org-workflow-stats.csv | sed 's/,/|/g' | sed 's/[^|]/-/g')
+          echo -e "|${metadata}|" >> stats-table.md
+          tail -n +2 org-workflow-stats.csv | sed 's/,/|/g; s/^/|/; s/$/|/' >> stats-table.md
+
+      - name: Format calculated result with templates
+        run: |
+          echo "Combine output files"
+          cat stats-table.md > issue_view.md
+
+      - name: Publish result to a new issue
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: Workflow runs summary for `${{ env.OWNER_NAME }}` org (${{ env.START_DATE }} - ${{ env.END_DATE }})
+          content-filepath: issue_view.md
+
+      - name: Upload all .txt .csv .md files to artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: workflow-stats
+          path: |
+            stats-table.md
+            org-workflow-stats.csv
+            org-runs.json
+```
+
+Below is an example of the `stats-table.md` file:
+
+```md
+|repository name|workflow name|average duration|median duration|success rate|total runs|
+|---------------|-------------|----------------|---------------|------------|----------|
+|repo_1|Test|3.00|3.00|100.00|1|
+|repo_1|Build|20.20|17.00|80.00|5|
+|repo_1|Deploy|17.00|17.00|100.00|1|
+|repo_2|Governance Validation|2.00|2.00|100.00|1|
+|repo_2|Linter|2.00|2.00|100.00|1|
+|repo_3|Superlinter|25.38|23.00|30.00|50|
+|repo_3|Long Build|36.17|36.50|53.70|54|
+|repo_3|Smoke Test|19.69|14.00|23.08|13|
+```
+
+</details>
+
+This will analyse workflow runs in the selected organisation, including the durations and success rate of each workflow for each repository.
 
 ## Contributing
 
