@@ -49,9 +49,9 @@ import statistics
 
 # Check if the workflow-names.txt file exists
 if os.path.isfile('workflow-names.txt'):
-    print(f'workflow-names.txt file is found')
+    print(f'  Info: workflow-names.txt file is found. Workflow runs will be filtered by the workflow names listed in the file.')
 else:
-    print(f'Warning: workflow-names.txt file not found')
+    print(f'  Warning: workflow-names.txt file not found')
     # Load the workflow names from the runs.json file
     with open('runs.json', 'r') as f:
         runs = json.load(f)
@@ -70,7 +70,7 @@ with open('workflow-stats.csv', 'w') as f:
 
 # Evaluate the stats for each workflow
 for workflow_name in workflow_names:
-    print(f'Evaluating: {workflow_name}')
+    print(f'  Evaluating: {workflow_name}')
 
     # Filter the runs by workflow name
     try:
@@ -95,8 +95,11 @@ for workflow_name in workflow_names:
     else:
         average_duration = '0.00'
         median_duration = '0.00'
-        success_rate = '0.0'
+        success_rate = '0.00'
 
     # Output the results to a CSV file
     with open('workflow-stats.csv', 'a') as f:
         f.write(f'{workflow_name},{average_duration},{median_duration},{success_rate},{total_runs}\n')
+
+print(f'  Evaluation completed: Results are written to workflow-stats.csv')
+os.remove('workflow-names.txt')
