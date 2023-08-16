@@ -75,7 +75,7 @@ if not repo_name:
     for repo in repo_names:
 
         # Get workflow runs
-        subprocess.run(['python', 'get_workflow_runs.py', owner_name, repo, start_date, end_date])
+        subprocess.run(['python', '/get_workflow_runs.py', owner_name, repo, start_date, end_date])
         # Read every JSON record in runs.json, add repo name to each record, and append to org-runs.json
         with open('runs.json', 'r') as f1, open('org-runs.json', 'a') as f2:
             data = json.load(f1)
@@ -89,7 +89,7 @@ if not repo_name:
                     f2.write('\n]')
 
         # Evaluate workflow runs statistics
-        subprocess.run(['python', 'evaluate_workflow_runs.py'])
+        subprocess.run(['python', '/evaluate_workflow_runs.py'])
         # Read every line of workflow-stats.csv skipping the header line, add repo name to the beginning of each line, and write to all-workflow-stats.csv
         with open('workflow-stats.csv', 'r') as f:
             lines = f.readlines()
@@ -102,7 +102,7 @@ if not repo_name:
 
 else:
     # Get workflow runs
-    subprocess.run(['python', 'get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
+    subprocess.run(['python', '/get_workflow_runs.py', owner_name, repo_name, start_date, end_date])
 
     # Evaluate workflow runs statistics
-    subprocess.run(['python', 'evaluate_workflow_runs.py'])
+    subprocess.run(['python', '/evaluate_workflow_runs.py'])
