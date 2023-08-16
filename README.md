@@ -1,5 +1,7 @@
 # Workflow Metrics Action
 
+[![CodeQL](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql) [![Docker Image CI](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml)
+
 This GitHub Action provides a way to evaluate statistics for your GitHub Actions workflows. With this action, you can easily monitor the performance of your workflows and identify areas for improvement.
 
 Metrics that are evaluated are:
@@ -25,7 +27,7 @@ The following options are available for configuring the action:
 | --- | --- | --- | --- |
 | `GH_TOKEN` | Yes | N/A | A GitHub token with access to the repository. Minimal scope is `repo` |
 | `OWNER_NAME` | Yes | N/A | Name of the repository owner. |
-| `REPO_NAME` | No | N/A | Name of the repository. If `REPO_NAME` is not provide, the action will analyse all the workflow runs in the organisation. |
+| `REPO_NAME` | No | N/A | Name of the repository. If `REPO_NAME` is not provided, the action will analyse all the workflow runs in the organisation. |
 | `START_DATE` | Yes | N/A | Start date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `END_DATE` | Yes | N/A | End date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting when analysing the whole org. |
@@ -37,6 +39,7 @@ After the action has completed, two files will be created in the root of the run
 - `runs.json` or `org-runs.json` - a JSON array of all workflow runs in the specified time range for the specified repository or organization.
 - `workflow-stats.csv` or `org-workflow-stats.csv` - a CSV file with workflow run statistics for the specified repository or organization.
 
+These are data files that then can be used for further analysis or reporting in visualizer of your choice. For example, you can ingest into datastore and visualize with PowerBI. Below are some examples on generating markdown table and mermaid diagram with the data files
 
 ## Example usages
 
@@ -57,7 +60,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER_NAME: "myOrg"
@@ -118,7 +121,7 @@ jobs:
           echo "REPO_NAME=${repo}" >> $GITHUB_ENV
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_NAME: ${{ env.REPO_NAME }}
@@ -195,7 +198,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      OWNER_NAME: ${{ github.repository_owner }}
 
     steps:
       - name: Checkout code
@@ -207,12 +209,14 @@ jobs:
           echo "END_DATE=$(date +%Y-%m-%d)" >> "$GITHUB_ENV"
           
       - name: Test docker action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ env.GH_TOKEN }}
+          OWNER_NAME: ${{ github.repository_owner }}
           START_DATE: ${{ env.START_DATE }}
           END_DATE: ${{ env.END_DATE }}
-
+          DELAY_BETWEEN_QUERY: 5
+    
       - name: Convert org-workflow-stats.csv to stats-table.md markdown table
         run: |
           echo -e "## Table View\n" > stats-table.md
@@ -246,7 +250,7 @@ Below is an example of the `stats-table.md` file:
 |repo_1|Test|3.00|3.00|100.00|1|
 |repo_1|Build|20.20|17.00|80.00|5|
 |repo_1|Deploy|17.00|17.00|100.00|1|
-|repo_2|Governance Validation|2.00|2.00|100.00|1|
+|repo_2|Custom Validation|2.00|2.00|100.00|1|
 |repo_2|Linter|2.00|2.00|100.00|1|
 |repo_3|Superlinter|25.38|23.00|30.00|50|
 |repo_3|Long Build|36.17|36.50|53.70|54|
