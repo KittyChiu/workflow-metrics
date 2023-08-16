@@ -25,20 +25,17 @@ The following options are available for configuring the action:
 | --- | --- | --- | --- |
 | `GH_TOKEN` | Yes | N/A | A GitHub token with access to the repository. Minimal scope is `repo` |
 | `OWNER_NAME` | Yes | N/A | Name of the repository owner. |
-| `REPO_NAME` | Yes | N/A | Name of the repository. |
+| `REPO_NAME` | No | N/A | Name of the repository. |
 | `START_DATE` | Yes | N/A | Start date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `END_DATE` | Yes | N/A | End date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
+| `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting. |
 
 ## Outputs
 
-After the action has completed, `workflow-stats.csv` file will be created in the root of the runner workspace. Below is an example of the `workflow-stats.csv` file:
+After the action has completed, two files will be created in the root of the runner workspace:
 
-```csv
-workflow_name,average_duration,median_duration,success_rate,total_runs
-workflow_1,12.33,12.00,100.00,3
-workflow_3,25.12,22.00,20.93,43
-workflow_2,15.50,15.50,50.00,2
-```
+- `runs.json` or `org-runs.json` - a JSON array of all workflow runs in the specified time range for the specified repository or organization.
+- `workflow-stats.csv` or `org-workflow-stats.csv` - a CSV file with workflow run statistics for the specified repository or organization.
 
 ## Example usages
 
@@ -77,11 +74,20 @@ jobs:
             runs.json
 ```
 
+Below is an example of the `workflow-stats.csv` file:
+
+```csv
+workflow_name,average_duration,median_duration,success_rate,total_runs
+workflow_1,12.33,12.00,100.00,3
+workflow_3,25.12,22.00,20.93,43
+workflow_2,15.50,15.50,50.00,2
+```
+
 </details>
 
 This will analyse workflow runs in selected repository, including the durations and success rate of each workflow.
 
-### 2. Generate a weekly report published to an GitHub Issue
+### 2. Generate a weekly report on the repository to an GitHub Issue
 
 <details>
 
