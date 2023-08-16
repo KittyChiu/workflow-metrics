@@ -14,7 +14,7 @@ Metrics that are evaluated are:
 ## Example use cases
 
 - As a product engineer, I want to identify areas of improvement for my process automation, so that I can improve delivery in next iteration.
-- As a engineering manager, I want to identify waste and inefficiencies in my SDLC process, so that I can reduce cycle time and improve velocity.
+- As an engineering manager, I want to identify waste and inefficiencies in my SDLC process, so that I can reduce cycle time and improve velocity.
 - As a DevOps platform owner, I want to identify long running workflows, so that I can right-sizing the runners.
 
 ## Configurations
@@ -255,7 +255,7 @@ Below is an example of the `stats-table.md` file:
 
 </details>
 
-This will analyse workflow runs in the selected organisation, including the durations and success rate of each workflow for each repository.
+This will analyse workflow runs in the selected organisation, including all workflows for each repository.
 
 ## Contributing
 
