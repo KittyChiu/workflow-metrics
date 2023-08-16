@@ -56,7 +56,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.3.0
+        uses: KittyChiu/workflow-metrics@v0.4.1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER_NAME: "myOrg"
@@ -70,7 +70,6 @@ jobs:
           name: workflow-stats
           path: |
             workflow-stats.csv
-            workflow-names.txt
             runs.json
 ```
 
@@ -118,7 +117,7 @@ jobs:
           echo "REPO_NAME=${repo}" >> $GITHUB_ENV
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.3.0
+        uses: KittyChiu/workflow-metrics@v0.4.1
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER_NAME: ${{ env.REPO_OWNER }}
@@ -163,7 +162,6 @@ jobs:
             stats-table.md
             stream-diagram.md
             workflow-stats.csv
-            workflow-names.txt
             runs.json
 ```
 

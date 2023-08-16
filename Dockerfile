@@ -1,7 +1,12 @@
 FROM python:3.9-slim-buster
 LABEL org.opencontainers.image.source https://github.com/kittychiu/workflow-metrics
 
-COPY *.py /
+# Create the /github/workspace/ directory if it doesn't exist
+RUN if [ ! -d "/github/workspace/" ]; then mkdir -p /github/workspace/; fi
+# Set the working directory to /github/workspace/
+WORKDIR /github/workspace/
+# Copy the current python scripts to /github/workspace/
+COPY *.py /github/workspace/
 
 # Update pip
 RUN python -m pip install --upgrade pip
@@ -16,4 +21,4 @@ RUN apt-get update && \
   apt-get install -y gh && \
   apt-get install -y jq
 
-CMD ["python", "/workflow_metrics.py"]
+CMD ["python", "/github/workspace/workflow_metrics.py"]
