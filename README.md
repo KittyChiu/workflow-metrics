@@ -13,8 +13,8 @@ Metrics that are evaluated are:
 
 ## Example use cases
 
-- As a product engineer, I want to understand the performance of my process automation, so that I can identify areas for improvement.
-- As a engineering manager, I want to understand the waste and inefficiencies in my SDLC process, so that I can identify areas to reduce runners compute time and improve velocity.
+- As a product engineer, I want to identify areas for improvement for my process automation, so that I can improve delivery in next iteration.
+- As a engineering manager, I want to identify waste and inefficiencies in my SDLC process, so that I can reduce cycle time and improve velocity.
 - As a DevOps platform owner, I want to identify long running workflows, so that I can right-sizing the runners.
 
 ## Configurations
@@ -179,7 +179,7 @@ Below is an example of the `stats-table.md` file:
 
 This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue.
 
-### 3. Monthly report for the whole org and post on a GitHub Issue
+### 3. Monthly report for the whole org and post to a GitHub Issue
 
 <details>
 
@@ -187,7 +187,6 @@ This will further convert `workflow-stats.csv` file containing workflow metrics 
 name: Monthly SLOs Report
 
 on:
-  workflow_dispatch:
   schedule:
     - cron: '0 0 1 * *'
 
@@ -223,16 +222,11 @@ jobs:
           echo -e "|${metadata}|" >> stats-table.md
           tail -n +2 org-workflow-stats.csv | sed 's/,/|/g; s/^/|/; s/$/|/' >> stats-table.md
 
-      - name: Format calculated result with templates
-        run: |
-          echo "Combine output files"
-          cat stats-table.md > issue_view.md
-
       - name: Publish result to a new issue
         uses: peter-evans/create-issue-from-file@v4
         with:
           title: Workflow runs summary for `${{ env.OWNER_NAME }}` org (${{ env.START_DATE }} - ${{ env.END_DATE }})
-          content-filepath: issue_view.md
+          content-filepath: stats-table.md
 
       - name: Upload all .txt .csv .md files to artifact
         uses: actions/upload-artifact@v3
