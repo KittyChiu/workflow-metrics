@@ -86,7 +86,7 @@ workflow_2,15.50,15.50,50.00,2
 
 This will analyse workflow runs in selected repository, including the durations and success rate of each workflow.
 
-### 2. Generate a weekly report on the repository to an GitHub Issue
+### 2. Weekly report on selected repository and post to a GitHub Issue
 
 <details>
 
@@ -178,7 +178,7 @@ Below is an example of the `stats-table.md` file:
 
 This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue.
 
-### 2. Generate a monthly report for the whole org, and post on an Issue
+### 3. Monthly report for the whole org and post on a GitHub Issue
 
 <details>
 
