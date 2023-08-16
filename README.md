@@ -15,7 +15,7 @@ Metrics that are evaluated are:
 
 - As a product engineer, I want to understand the performance of my process automation, so that I can identify areas for improvement.
 - As a engineering manager, I want to understand the waste and inefficiencies in my SDLC process, so that I can identify areas to reduce runners compute time and improve velocity.
-- As a DevOps platform owner, I want to identify extraordinarily long running workflows, so that I can right-sizing the runners.
+- As a DevOps platform owner, I want to identify long running workflows, so that I can right-sizing the runners.
 
 ## Configurations
 
@@ -36,6 +36,7 @@ After the action has completed, two files will be created in the root of the run
 
 - `runs.json` or `org-runs.json` - a JSON array of all workflow runs in the specified time range for the specified repository or organization.
 - `workflow-stats.csv` or `org-workflow-stats.csv` - a CSV file with workflow run statistics for the specified repository or organization.
+
 
 ## Example usages
 
@@ -84,7 +85,7 @@ workflow_2,15.50,15.50,50.00,2
 
 </details>
 
-This will analyse workflow runs in selected repository, including the durations and success rate of each workflow.
+This will analyse workflow runs in the selected repository, including the durations and success rate of each workflow.
 
 ### 2. Weekly report on selected repository and post to a GitHub Issue
 
@@ -268,4 +269,4 @@ Please see the [contributing guidelines](CONTRIBUTING.md) for more information.
 
 ## License
 
-This project is licensed under the [MIT License][LICENSE].
+This project is licensed under the [MIT License](LICENSE).
