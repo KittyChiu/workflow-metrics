@@ -37,6 +37,7 @@ After the action has completed, two files will be created in the root of the run
 - `runs.json` or `org-runs.json` - a JSON array of all workflow runs in the specified time range for the specified repository or organization.
 - `workflow-stats.csv` or `org-workflow-stats.csv` - a CSV file with workflow run statistics for the specified repository or organization.
 
+These are data files that then can be used for further analysis or reporting in visualizer of your choice. For example, you can ingest into datastore and visualize with PowerBI. Below are some examples on generating markdown table and mermaid diagram with the data files
 
 ## Example usages
 
@@ -57,7 +58,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OWNER_NAME: "myOrg"
@@ -118,7 +119,7 @@ jobs:
           echo "REPO_NAME=${repo}" >> $GITHUB_ENV
 
       - name: Call workflow-runs action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO_NAME: ${{ env.REPO_NAME }}
@@ -208,7 +209,7 @@ jobs:
           echo "END_DATE=$(date +%Y-%m-%d)" >> "$GITHUB_ENV"
           
       - name: Test docker action
-        uses: KittyChiu/workflow-metrics@v0.4.5
+        uses: kittychiu/workflow-metrics@v0.4.7
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           START_DATE: ${{ env.START_DATE }}
@@ -252,7 +253,7 @@ Below is an example of the `stats-table.md` file:
 |repo_1|Test|3.00|3.00|100.00|1|
 |repo_1|Build|20.20|17.00|80.00|5|
 |repo_1|Deploy|17.00|17.00|100.00|1|
-|repo_2|Governance Validation|2.00|2.00|100.00|1|
+|repo_2|Custom Validation|2.00|2.00|100.00|1|
 |repo_2|Linter|2.00|2.00|100.00|1|
 |repo_3|Superlinter|25.38|23.00|30.00|50|
 |repo_3|Long Build|36.17|36.50|53.70|54|
