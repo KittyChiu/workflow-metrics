@@ -31,19 +31,22 @@ Output:
     - Test results for the `get_workflow_runs.py` script
 
 Example:
-    python -m unittest test_get_workflow_runs.TestGetWorkflowRuns.test_get_workflow_runs
+    python -m unittest test_get_workflow_runs.py
 """
 import unittest
 import subprocess
 import json
 import os
 
+from dotenv import load_dotenv
+
 class TestGetWorkflowRuns(unittest.TestCase):
     def setUp(self):
-        self.repo_owner = "myorg"
-        self.repo_name = "myrepo"
-        self.start_date = "2023-07-02"
-        self.end_date = "2023-08-03"
+        load_dotenv()
+        self.repo_owner = os.getenv("OWNER_NAME")
+        self.repo_name = os.getenv("REPO_NAME")
+        self.start_date = os.getenv("START_DATE")
+        self.end_date = os.getenv("END_DATE")
         self.invalid_start_date = "abc"
         self.invalid_end_date = "xyz"
 

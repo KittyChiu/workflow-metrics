@@ -59,7 +59,7 @@ Output:
     - A list of workflow runs in JSON format
 
 Example:
-    python get_workflow_runs.py octocat hello-world 2022-01-01T00:00:00Z 2022-01-31T23:59:59Z
+    python get_workflow_runs.py octocat hello-world 2022-01-01 2022-01-31
 """
 
 import subprocess
@@ -68,9 +68,11 @@ import sys
 
 from datetime import datetime
 
+RUNS_FILE = 'runs.json'
+
 # Parse the command-line arguments
 if len(sys.argv) != 5:
-    print("Usage: python get_workflow_runs.py <repo_owner> <repo_name> <start_date> <end_date>")
+    print('Usage: python get_workflow_runs.py <repo_owner> <repo_name> <start_date> <end_date>')
     sys.exit(1)
 
 repo_owner = sys.argv[1]
@@ -83,7 +85,7 @@ try:
     start_date = datetime.fromisoformat(start_date)
     end_date = datetime.fromisoformat(end_date)
 except ValueError:
-    print('Error: Invalid date format. Please use ISO format (YYYY-MM-DDTHH:MM:SSZ).')
+    print('Error: Invalid date format. Please use ISO format (YYYY-MM-DD).')
     sys.exit(1)
     
 # Parse jq query for gh api command
@@ -120,8 +122,8 @@ for item in workflow_runs:
     item['duration'] = duration
 
 # Print the workflow runs as raw.json file
-with open("runs.json", "w") as f:
+with open(RUNS_FILE, 'w') as f:
     json.dump(workflow_runs, f)
 
 # Print the number of workflow runs 
-print(f"[{repo_owner}/{repo_name}]: No. of workflow runs: {len(workflow_runs)}")
+print(f'[{repo_owner}/{repo_name}]: No. of workflow runs: {len(workflow_runs)}')
