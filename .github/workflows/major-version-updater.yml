@@ -14,7 +14,11 @@ jobs:
     - name: Get major version num and update tag
       run: |
         MAJOR=$(echo $GITHUB_REF_NAME | grep -oE '^v[0-9]+' | cut -c2-)
-        git config --global user.name 'Kitty Chiu'
-        git config --global user.email '42864823+KittyChiu@users.noreply.github.com'
-        git tag -fa $MAJOR -m "Update major version tag"
-        git push origin $MAJOR --force
+        if [ -n "$MAJOR" ]; then
+          git config --global user.name 'Kitty Chiu'
+          git config --global user.email '42864823+KittyChiu@users.noreply.github.com'
+          git tag -fa $MAJOR -m "Update major version tag"
+          git push origin $MAJOR --force
+        else
+          echo "No major version found in tag name. Ensure that the tag name follows the Semantic Versioning Specification (https://semver.org/)."
+        fi
