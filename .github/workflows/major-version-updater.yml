@@ -13,9 +13,8 @@ jobs:
 
     - name: Get major version num and update tag
       run: |
-        VERSION=${GITHUB_REF#refs/tags/}
-        MAJOR=${VERSION%%.*}
+        MAJOR=$(echo $GITHUB_REF_NAME | grep -oE '^v[0-9]+' | cut -c2-)
         git config --global user.name 'Kitty Chiu'
         git config --global user.email '42864823+KittyChiu@users.noreply.github.com'
-        git tag -fa ${MAJOR} -m "Update major version tag"
-        git push origin ${MAJOR} --force
+        git tag -fa $MAJOR -m "Update major version tag"
+        git push origin $MAJOR --force
