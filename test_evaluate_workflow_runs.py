@@ -22,7 +22,7 @@ Description:
 
     To run the tests, you can use the following command:
 
-        python -m unittest test_evaluate_workflow_runs.TestEvaluateWorkflowRuns.test_evaluate_workflow_runs
+        python -m unittest test_evaluate_workflow_runs.py
 
     This command runs the `test_evaluate_workflow_runs()` function in the `TestEvaluateWorkflowRuns` class, which
     executes all the test cases defined in the class.
