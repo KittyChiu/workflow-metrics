@@ -16,4 +16,8 @@ RUN apt-get update && \
   apt-get install -y gh && \
   apt-get install -y jq
 
+# Install the python modules
+RUN pip install requests
+RUN pip install jq
+
 CMD ["python", "/workflow_metrics.py"]

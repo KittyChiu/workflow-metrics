@@ -27,7 +27,8 @@ Returns:
 
 Requirements:
     - Python 3.x
-    - `jq` command-line tool
+    - jq
+    - requests
 
 Description:
     This script retrieves all workflow runs for a repository within the specified date range. The script takes four
@@ -52,8 +53,7 @@ Description:
         - url
         - duration
 
-    To run the script, you need to have Python 3.x and the `jq` command-line tool installed on your system. You also
-    need to have a GitHub API token with the `repo` scope.
+    To run the script, you need to have a GitHub API token with the `repo` scope.
 
 Output:
     - A list of workflow runs in JSON format
@@ -62,9 +62,11 @@ Example:
     python get_workflow_runs.py octocat hello-world 2022-01-01 2022-01-31
 """
 
-import subprocess
 import json
 import sys
+import requests
+import os
+import jq
 
 from datetime import datetime
 
@@ -82,44 +84,47 @@ end_date = sys.argv[4]
 
 # Validate the start_date and end_date arguments
 try:
-    start_date = datetime.fromisoformat(start_date)
-    end_date = datetime.fromisoformat(end_date)
+    start_date = datetime.fromisoformat(start_date).date()
+    end_date = datetime.fromisoformat(end_date).date()
 except ValueError:
     print('Error: Invalid date format. Please use ISO format (YYYY-MM-DD).')
     sys.exit(1)
     
-# Parse jq query for gh api command
+# Define the jq query
 jq_query = (
-    f'[.workflow_runs[] '
+    f'.workflow_runs[] '
     f'| select(.run_started_at >= "{start_date}" and .run_started_at <= "{end_date}") '
-    f'| {{conclusion,created_at,display_title,event,head_branch,name,run_number,run_started_at,run_attempt,status,updated_at,url}}] '
+    f'| {{conclusion,created_at,display_title,event,head_branch,name,run_number,run_started_at,run_attempt,status,updated_at,url}} '
     f'| select(length > 0)'
 )
+# Construct the GitHub API URL
+url = f'https://api.github.com/repos/{repo_owner}/{repo_name}/actions/runs?per_page=100&created={start_date}..{end_date}'
 
-# Construct the gh api command
-cmd = f'gh api repos/{repo_owner}/{repo_name}/actions/runs --paginate --jq \'{jq_query}\''
+# Authenticate with the GitHub API using a personal access token
+access_token = os.environ.get('GH_TOKEN')
+if access_token is None:
+    raise ValueError('GH_TOKEN environment variable is not set')
+headers = {'Accept': 'application/vnd.github.v3+json', 'Authorization': f'token {access_token}'}
 
-# Send the command and retrieve the output
-output = subprocess.check_output(cmd, shell=True, text=True)
+# Send the API request and retrieve the JSON response
+response = requests.get(url, headers=headers)
+response.raise_for_status()
+data = response.json()
+# Filter the data using the jq query
+program = jq.compile(jq_query)
+filtered_data = program.input(data).all()
 
-# Parse the output as JSON and return the workflow runs
+# Calculate the duration for each workflow run
 workflow_runs = []
-for line in output.strip().split('\n'):
+for item in filtered_data:
     try:
-        data = json.loads(line)
-        if isinstance(data, list):
-            workflow_runs.extend(data)
-        else:
-            workflow_runs.append(data)
-    except json.JSONDecodeError:
+        updated_at = datetime.fromisoformat(item['updated_at'].replace('Z', '+00:00'))
+        run_started_at = datetime.fromisoformat(item['run_started_at'].replace('Z', '+00:00'))
+        duration = (updated_at - run_started_at).total_seconds()
+        item['duration'] = duration
+        workflow_runs.append(item)
+    except (KeyError, ValueError):
         pass
-
-# Add the duration field to each workflow run, calculated as the difference between the updated_at and run_started_at fields
-for item in workflow_runs:
-    updated_at = datetime.fromisoformat(item['updated_at'].replace('Z', '+00:00'))
-    run_started_at = datetime.fromisoformat(item['run_started_at'].replace('Z', '+00:00'))
-    duration = (updated_at - run_started_at).total_seconds()
-    item['duration'] = duration
 
 # Print the workflow runs as raw.json file
 with open(RUNS_FILE, 'w') as f:
