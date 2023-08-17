@@ -47,25 +47,29 @@ import os
 import json
 import statistics
 
-# Check if the workflow-names.txt file exists
-if os.path.isfile('workflow-names.txt'):
-    print(f'  Info: workflow-names.txt file is found. Workflow runs will be filtered by the workflow names listed in the file.')
+WORKFLOW_NAMES_FILE = 'workflow-names.txt'
+RUNS_FILE = 'runs.json'
+STATS_FILE = 'workflow-stats.csv'
+
+# Check if the workflow names file exists
+if os.path.isfile(WORKFLOW_NAMES_FILE):
+    print(f'  Info: {WORKFLOW_NAMES_FILE} file is found. Workflow runs will be filtered by the workflow names listed in the file.')
 else:
-    print(f'  Warning: workflow-names.txt file not found')
-    # Load the workflow names from the runs.json file
-    with open('runs.json', 'r') as f:
+    print(f'  Warning: {WORKFLOW_NAMES_FILE} file not found')
+    # Load the workflow names from the RUNS_FILE
+    with open(RUNS_FILE, 'r') as f:
         runs = json.load(f)
     workflow_names = list(set(run['name'] for run in runs))
-    # Write the workflow names to the workflow-names.txt file
-    with open('workflow-names.txt', 'w') as f:
+    # Write the workflow names to the workflow names file
+    with open(WORKFLOW_NAMES_FILE, 'w') as f:
         f.write('\n'.join(workflow_names))
 
-# Load the workflow names from the workflow-names.txt file
-with open('workflow-names.txt', 'r') as f:
+# Load the workflow names from the workflow names file
+with open(WORKFLOW_NAMES_FILE, 'r') as f:
     workflow_names = f.read().splitlines()
 
 # Output the results to a CSV file
-with open('workflow-stats.csv', 'w') as f:
+with open(STATS_FILE, 'w') as f:
     f.write('workflow_name,average_duration,median_duration,success_rate,total_runs\n')
 
 # Evaluate the stats for each workflow
@@ -74,11 +78,11 @@ for workflow_name in workflow_names:
 
     # Filter the runs by workflow name
     try:
-        with open('runs.json', 'r') as f:
+        with open(RUNS_FILE, 'r') as f:
             runs = json.load(f)
         runs_filtered = [run for run in runs if run['name'] == workflow_name]
     except FileNotFoundError:
-        print(f'Error: runs.json file not found')
+        print(f'Error: {RUNS_FILE} file not found')
         continue
 
     # Evaluate the total number of runs
@@ -98,8 +102,8 @@ for workflow_name in workflow_names:
         success_rate = '0.00'
 
     # Output the results to a CSV file
-    with open('workflow-stats.csv', 'a') as f:
+    with open(STATS_FILE, 'a') as f:
         f.write(f'{workflow_name},{average_duration},{median_duration},{success_rate},{total_runs}\n')
 
 print(f'  Evaluation completed: Results are written to workflow-stats.csv')
-os.remove('workflow-names.txt')
+os.remove(WORKFLOW_NAMES_FILE)

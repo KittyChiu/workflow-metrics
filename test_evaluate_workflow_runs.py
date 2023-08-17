@@ -22,7 +22,7 @@ Description:
 
     To run the tests, you can use the following command:
 
-        python -m unittest test_evaluate_workflow_runs.TestEvaluateWorkflowRuns.test_evaluate_workflow_runs
+        python -m unittest test_evaluate_workflow_runs.py
 
     This command runs the `test_evaluate_workflow_runs()` function in the `TestEvaluateWorkflowRuns` class, which
     executes all the test cases defined in the class.
@@ -56,6 +56,7 @@ class TestEvaluateWorkflowRuns(unittest.TestCase):
         expected_csv_contents = 'workflow_name,average_duration,median_duration,success_rate,total_runs\nworkflow_1,12.33,12.00,100.00,3\nworkflow_2,15.50,15.50,50.00,2\n'
         self.assertEqual(actual_csv_contents, expected_csv_contents)
 
+
     def test_evaluate_workflow_runs_no_workflow_names_file(self):
         # Run the evaluate-workflow-runs.py script
         subprocess.run(['python', 'evaluate_workflow_runs.py'])
@@ -72,7 +73,6 @@ class TestEvaluateWorkflowRuns(unittest.TestCase):
 
     def tearDown(self):
         # Remove the test files
-        os.remove('workflow-names.txt')
         os.remove('runs.json')
         os.remove('workflow-stats.csv')
 
