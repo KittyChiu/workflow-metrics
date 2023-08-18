@@ -178,6 +178,9 @@ Below is an example of the `stats-table.md` file:
 |workflow_3|3.00|2.00|100.00|3|
 ```
 
+An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/17).
+
+
 </details>
 
 This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue.
@@ -256,6 +259,8 @@ Below is an example of the `stats-table.md` file:
 |repo_3|Long Build|36.17|36.50|53.70|54|
 |repo_3|Smoke Test|19.69|14.00|23.08|13|
 ```
+
+An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/18).
 
 </details>
 
