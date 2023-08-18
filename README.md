@@ -260,7 +260,7 @@ Below is an example of the `stats-table.md` file:
 |repo_3|Smoke Test|19.69|14.00|23.08|13|
 ```
 
-An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/18)
+An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/18).
 
 </details>
 
