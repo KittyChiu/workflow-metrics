@@ -178,7 +178,7 @@ Below is an example of the `stats-table.md` file:
 |workflow_3|3.00|2.00|100.00|3|
 ```
 
-An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/17)
+An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/17).
 
 
 </details>
