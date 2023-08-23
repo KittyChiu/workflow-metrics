@@ -31,6 +31,7 @@ The following options are available for configuring the action:
 | `START_DATE` | Yes | N/A | Start date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `END_DATE` | Yes | N/A | End date for the workflow runs data set. This should be in the format `YYYY-MM-DD`. |
 | `DELAY_BETWEEN_QUERY` | No | N/A | No. of seconds to wait between queries to the GitHub API. This is to prevent errors from rate limiting when analysing the whole org. |
+| `workflow-names.txt` | No | N/A | A file that contains a list of selected workflow names to filter the result. This should be in the runner's workspace folder. |
 
 ## Outputs
 
@@ -56,9 +57,6 @@ jobs:
   evaluate-actions-consumption:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Call workflow-runs action
         uses: kittychiu/workflow-metrics@v0.4.7
         env:
@@ -109,7 +107,7 @@ jobs:
       OWNER_NAME: ${{ github.repository_owner }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout workflow-names.txt
         uses: actions/checkout@v3
 
       - name: Set dates and repo name
@@ -168,6 +166,14 @@ jobs:
             runs.json
 ```
 
+Example content of `workflow-names.txt`:
+
+```
+workflow_1
+workflow_2
+workflow_3
+```
+
 Below is an example of the `stats-table.md` file:
 
 ```md
@@ -203,9 +209,6 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
       - name: Set dates
         run: |
           echo "START_DATE=$(date -d '-14 days' +%Y-%m-%d)" >> "$GITHUB_ENV"
