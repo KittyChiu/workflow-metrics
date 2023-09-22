@@ -48,6 +48,8 @@ To use this action, simply include it in your workflow file:
 
 ### 1. Basic usage
 
+This will analyse workflow runs in the selected repository, including the durations and success rate of each workflow.
+
 <details>
 
 ```yml
@@ -86,9 +88,9 @@ workflow_2,15.50,15.50,50.00,2
 
 </details>
 
-This will analyse workflow runs in the selected repository, including the durations and success rate of each workflow.
-
 ### 2. Weekly report on selected repository and post to a GitHub Issue
+
+This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue. An example of the rendered outputs is [in this Issue](https://github.com/KittyChiu/workflow-metrics/issues/17).
 
 <details>
 
@@ -184,14 +186,23 @@ Below is an example of the `stats-table.md` file:
 |workflow_3|3.00|2.00|100.00|3|
 ```
 
-An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/17).
+Below is an example of the `stream-diagram.md` file:
 
+```mermaid
+timeline
+      workflow name : average duration : median duration : success rate : total runs  
+      CI Build : 17.00 : 17.00 : 100.00 : 1
+      QA & Validation : 36.17 : 36.50 : 53.70 : 54
+      Deploy to non-prod : 3.00 : 2.00 : 100.00 : 3
+```
 
 </details>
 
-This will further convert `workflow-stats.csv` file containing workflow metrics into a markdown table, mermaid diagram, and publishes it to a new issue.
-
 ### 3. Monthly report for the whole org and post to a GitHub Issue
+
+This will analyse workflow runs in the selected organisation, including all workflows for each repository. An example of the rendered output is [in this Issue](https://github.com/KittyChiu/workflow-metrics/issues/18).
+
+
 
 <details>
 
@@ -263,11 +274,7 @@ Below is an example of the `stats-table.md` file:
 |repo_3|Smoke Test|19.69|14.00|23.08|13|
 ```
 
-An example of the GitHub Issue generated is [here](https://github.com/KittyChiu/workflow-metrics/issues/18).
-
 </details>
-
-This will analyse workflow runs in the selected organisation, including all workflows for each repository.
 
 ## Contributing
 
