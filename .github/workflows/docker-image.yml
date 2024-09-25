@@ -27,5 +27,5 @@ jobs:
 
     - name: Build the Docker image
       run: |
-        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/kittychiu/workflow-metrics:v1
-        docker push ghcr.io/kittychiu/workflow-metrics:v1
+        docker build . --file Dockerfile --platform linux/amd64 -t ghcr.io/marcuslyons/workflow-metrics:v1
+        docker push ghcr.io/marcuslyons/workflow-metrics:v1

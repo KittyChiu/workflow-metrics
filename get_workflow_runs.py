@@ -87,7 +87,7 @@ try:
 except ValueError:
     print('Error: Invalid date format. Please use ISO format (YYYY-MM-DD).')
     sys.exit(1)
-    
+
 # Parse jq query for gh api command
 jq_query = (
     f'[.workflow_runs[] '
@@ -97,7 +97,9 @@ jq_query = (
 )
 
 # Construct the gh api command
-cmd = f'gh api repos/{repo_owner}/{repo_name}/actions/runs --paginate --jq \'{jq_query}\''
+cmd = (f'gh api repos/{repo_owner}/{repo_name}/actions/runs --paginate '
+       f'--method GET -F created={start_date.strftime("%Y-%m-%d")}..{end_date.strftime("%Y-%m-%d")} '
+       f'--jq \'{jq_query}\'')
 
 # Send the command and retrieve the output
 output = subprocess.check_output(cmd, shell=True, text=True)
@@ -125,5 +127,5 @@ for item in workflow_runs:
 with open(RUNS_FILE, 'w') as f:
     json.dump(workflow_runs, f)
 
-# Print the number of workflow runs 
+# Print the number of workflow runs
 print(f'[{repo_owner}/{repo_name}]: No. of workflow runs: {len(workflow_runs)}')
