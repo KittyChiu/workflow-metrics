@@ -1,3 +1,6 @@
+> [!NOTE]
+> **This repository is now archived and no longer maintain**. Many GitHub features had releases since August 2023, and that include [Actions Performance Metrics](https://github.blog/changelog/2024-10-31-actions-performance-metrics-in-public-preview/) in October 2024. What is the difference? Performance Metrics have capacity and cost accountability view of Actions, while this solution is based on value stream view. Both have differences in use cases and purposes, one is for at-scale management, while the other is for local optimisation. The latter concept is still very much valid, in particular with agentic SDLC where context budget is another dimension needs to be managed.
+
 # Workflow Metrics Action
 
 [![CodeQL](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/github-code-scanning/codeql) [![Docker Image CI](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml/badge.svg)](https://github.com/KittyChiu/workflow-metrics/actions/workflows/docker-image.yml)
