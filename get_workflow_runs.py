@@ -97,7 +97,9 @@ jq_query = (
 )
 
 # Construct the gh api command
-cmd = f'gh api repos/{repo_owner}/{repo_name}/actions/runs --paginate --jq \'{jq_query}\''
+cmd = (f'gh api repos/{repo_owner}/{repo_name}/actions/runs --paginate '
+       f'--method GET -F created={start_date.strftime("%Y-%m-%d")}..{end_date.strftime("%Y-%m-%d")} '
+       f'--jq \'{jq_query}\'')
 
 # Send the command and retrieve the output
 output = subprocess.check_output(cmd, shell=True, text=True)
